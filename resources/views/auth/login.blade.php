@@ -68,7 +68,7 @@
     </div>
     
     <div class="auth-footer">
-        <a href="/shop">← Back to Shop</a>
+        <a href="/shop/search">← Back to Shop</a>
     </div>
 </div>
 @endsection
