@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 // Home page - Default to Aimeos shop landing
 Route::get('/', function () {
-    return redirect('/shop');
+    return redirect('/shop/search');
 })->name('home');
 
 /**
@@ -71,12 +71,25 @@ Route::middleware(['web', 'auth'])->group(function () {
         return redirect('/admin/dashboard');
     });
     
-    // Admin dashboard - Simple welcome page
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard', [
-            'user' => Auth::user(),
-        ]);
-    })->name('admin.dashboard');
+    // Admin dashboard - Dynamic statistics from Aimeos tables
+    Route::get('/admin/dashboard', App\Http\Controllers\Admin\DashboardController::class)->name('admin.dashboard');
+    
+    // User management resource routes with /admin prefix
+    Route::resource('admin/users', App\Http\Controllers\Admin\UserController::class, [
+        'names' => [
+            'index' => 'users.index',
+            'create' => 'users.create',
+            'store' => 'users.store',
+            'show' => 'users.show',
+            'edit' => 'users.edit',
+            'update' => 'users.update',
+            'destroy' => 'users.destroy',
+        ]
+    ]);
+    
+    // Settings management routes
+    Route::get('/admin/settings', [App\Http\Controllers\Admin\SettingsController::class, 'show'])->name('settings.show');
+    Route::put('/admin/settings', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
     
     // Protect Aimeos admin routes
     // This ensures /admin/{site}/jqadm/* routes require authentication
